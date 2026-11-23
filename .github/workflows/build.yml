@@ -8,7 +8,7 @@ on:
       mode:
         description: "install = boot ISO lalu install; boot = pakai disk hasil install"
         type: choice
-        options: [install, boot]
+        options: [install, boot, service]
         default: boot
       save:
         description: "Simpan disk kembali sebagai artifact setelah VM mati (mode boot)"
@@ -31,6 +31,7 @@ concurrency:
 # gh workflow run build.yml --ref loop-xubuntu22 -f mode=install            NOTE: setelah selsai tekan shutdown klik enter
 # gh workflow run build.yml --ref loop-xubuntu22 -f mode=boot -f save=true  NOTE: boot untuk modifikasi image dan keluar
 # gh workflow run build.yml --ref loop-xubuntu22 -f mode=boot -f loop=true  NOTE: boot dan loop
+# gh workflow run build.yml --ref loop-xubuntu22 -f mode=service -f loop=true  NOTE: service captcha dan loop tanpa boot qemu
 
 jobs:
   vm:
@@ -81,6 +82,7 @@ jobs:
 
 
       - name: Kosongkan disk runner
+        if: env.MODE == 'install' || env.MODE == "boot"
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
           sudo docker image prune -af || true
@@ -118,6 +120,7 @@ jobs:
           ls -lh
 
       - name: Jalankan QEMU
+        if: env.MODE == 'install' || env.MODE == "boot"
         env:
           VNC_PASSWORD: ${{ secrets.VNC_PASSWORD }}
         run: |
@@ -160,7 +163,32 @@ jobs:
             -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
 
 
-      - name: Ketik perintah ke dalam VM dan buat Trowongan
+      - name: Run service
+        if: env.MODE == 'service'
+        env:
+          CHAT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: "7797309176"
+        run: |
+          #cpcha service
+          pip3 install python-opencv2
+          python3 utils/server_cpt.py 2>&1 &
+
+          ./cloudflared tunnel --no-autoupdate --url http://localhost:8080 > ztunnel.log 2>&1 &
+          sleep 10
+          ZURL=$(grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' ztunnel.log | head -1)
+
+
+          if [ -n "$URL" ]; then
+            MSG="[VNC-$COUNTER] captcha_service: $ZURL"
+          else
+            MSG="[VNC-$COUNTER] GAGAL captcha service"
+          fi
+          curl -s "https://api.telegram.org/bot$CHAT_TOKEN/sendMessage" \
+            -d chat_id="$CHAT_ID" --data-urlencode text="$MSG" > /dev/null
+
+
+
+      - name: Ketik perintah ke dalam VM dan buat Trowongan + service
         if: env.MODE == 'boot'
         env:
           SESI_PASSWORD: ${{ secrets.PASS_SESI }}
