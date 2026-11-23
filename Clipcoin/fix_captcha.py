@@ -70,6 +70,7 @@ def api_captcha(q, s):
         base = out.read()
 
     base = base.split("captcha_service: ")[1]
+    #base = "https://exp-conditioning-coastal-galaxy.trycloudflare.com"
 
     params = {
         "queue_b64": q,
@@ -77,7 +78,7 @@ def api_captcha(q, s):
     }
     url  = f"{base}/?"+urlencode(params)
 
-    print("[+] using api captcha")
+    print("[+] using api captcha: "+base)
     try:
         res = requests.get(url)
         print(res.text)
@@ -140,9 +141,9 @@ def display_banner(width=42):
         left = pad // 2
         return '│' + ' ' * left + text + ' ' * (pad - left) + '│'
     print(W + '╭' + '─' * width + '╮' + RESET)
-    print(W + center('LUCKYWATCH BOT') + RESET)
+    print(W + center('ClipCoin BOT') + RESET)
     print(W + '├' + '─' * width + '┤' + RESET)
-    print(W + center('🌐 luckywatch.pro') + RESET)
+    print(W + center('🌐 clipcoin.pro') + RESET)
     print(W + center('📱 t.me/chaipiyo') + RESET)
     print(W + '├' + '─' * width + '┤' + RESET)
     print(W + center('made by') + RESET)
