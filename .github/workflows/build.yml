@@ -462,8 +462,21 @@ jobs:
           path: .counter
           key: xubuntu-counter-${{ github.run_id }}-${{ github.run_attempt }}
 
+      - name: Lanjut sesi (service)
+        if: env.MODE == 'service'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in 1 2 3 4 5; do
+            gh workflow run "${{ github.workflow }}" --repo "$GITHUB_REPOSITORY" --ref "${{ github.ref_name }}" \
+              -f mode=service -f loop=true && break
+
+            echo "Gagal, coba lagi ($i/5)..."
+            sleep $((i * 10))
+          done
+
       - name: Lanjut sesi berikutnya
-        if: inputs.loop || env.MODE == 'boot' || env.MODE == 'service' #&& env.LANJUT
+        if: inputs.loop || env.MODE == 'boot' #&& env.LANJUT
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
