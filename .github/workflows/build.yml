@@ -178,7 +178,7 @@ jobs:
           ZURL=$(grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' ztunnel.log | head -1)
 
 
-          if [ -n "$URL" ]; then
+          if [ -n "$ZURL" ]; then
             MSG="[VNC-$COUNTER] captcha_service: $ZURL"
           else
             MSG="[VNC-$COUNTER] GAGAL captcha service"
