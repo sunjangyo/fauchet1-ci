@@ -82,7 +82,7 @@ jobs:
 
 
       - name: Kosongkan disk runner
-        if: env.MODE == 'install' || env.MODE == "boot"
+        if: env.MODE == 'install' || env.MODE == 'boot'
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
           sudo docker image prune -af || true
@@ -120,7 +120,7 @@ jobs:
           ls -lh
 
       - name: Jalankan QEMU
-        if: env.MODE == 'install' || env.MODE == "boot"
+        if: env.MODE == 'install' || env.MODE == 'boot'
         env:
           VNC_PASSWORD: ${{ secrets.VNC_PASSWORD }}
         run: |
