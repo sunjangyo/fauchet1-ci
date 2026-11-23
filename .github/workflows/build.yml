@@ -395,8 +395,15 @@ jobs:
 
           #echo "LANJUT=false" >> "$GITHUB_ENV" # stop loop
 
+      - name: Tunggu mati (service)
+        if: env.MODE == 'service'
+        run: |
+          for i in $(seq 1 1880); do
+            sleep 10
+          done
 
       - name: Tunggu VM mati
+        if: env.MODE == 'install' || env.MODE == 'boot'
         run: |
           mon() { echo "$1" | socat - UNIX-CONNECT:/tmp/qemu-mon.sock > /dev/null 2>&1 || true; }
           alive() { pgrep -x qemu-system-x86 > /dev/null; }
