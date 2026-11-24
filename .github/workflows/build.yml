@@ -476,7 +476,7 @@ jobs:
           done
 
       - name: Lanjut sesi berikutnya
-        if: inputs.loop || env.MODE == 'boot' #&& env.LANJUT
+        if: inputs.loop && env.MODE == 'boot' #&& env.LANJUT
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
