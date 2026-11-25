@@ -28,10 +28,11 @@ async def main():
 
     terakhir_bot = None
     # SEMUA riwayat, urut lama -> baru, langsung tampil saat dijalankan
-    async for m in client.iter_messages(BOT, reverse=False, limit=2):
+    async for m in client.iter_messages(BOT, limit=10):
         tampil(m)
         if not m.out:
             terakhir_bot = m
+            break
 
     # simpan pesan bot paling baru ke file
     if terakhir_bot:

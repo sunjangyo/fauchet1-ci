@@ -70,7 +70,6 @@ def api_captcha(q, s):
         base = out.read()
 
     base = base.split("captcha_service: ")[1]
-    #base = "https://exp-conditioning-coastal-galaxy.trycloudflare.com"
 
     params = {
         "queue_b64": q,
