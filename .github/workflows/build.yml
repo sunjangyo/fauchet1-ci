@@ -398,9 +398,8 @@ jobs:
       - name: Tunggu mati (service)
         if: env.MODE == 'service'
         run: |
-          for i in $(seq 1 1880); do
-            sleep 10
-          done
+          sleep 18000 # 5jam
+
 
       - name: Tunggu VM mati
         if: env.MODE == 'install' || env.MODE == 'boot'
